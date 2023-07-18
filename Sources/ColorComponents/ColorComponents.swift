@@ -174,10 +174,21 @@ extension ColorComponents {
     
     /// Creates a `CGColor` from the color components.
     public var cgColor: CGColor {
-        CGColor(red: CGFloat(red / 255),
-                green: CGFloat(green / 255),
-                blue: CGFloat(blue / 255),
-                alpha: CGFloat(alpha / 255))
+        #if !os(macOS)
+        if #available(iOS 13.0, tvOS 13.0, watchOS 6.0, *) {
+            return CGColor(red: CGFloat(red / 255),
+                           green: CGFloat(green / 255),
+                           blue: CGFloat(blue / 255),
+                           alpha: CGFloat(alpha / 255))
+        } else {
+            return uiColor.cgColor
+        }
+        #else
+        return CGColor(red: CGFloat(red / 255),
+                       green: CGFloat(green / 255),
+                       blue: CGFloat(blue / 255),
+                       alpha: CGFloat(alpha / 255))
+        #endif
     }
 }
 
