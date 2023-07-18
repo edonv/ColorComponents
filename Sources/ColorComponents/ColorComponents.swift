@@ -228,7 +228,7 @@ extension ColorComponents {
     
     /// Initializes from a SwiftUI `Color`.
     /// - Parameter color: A SwiftUI `Color`.
-    @available(iOS 14, macOS 11, *)
+    @available(iOS 14, macOS 11, tvOS 14, watchOS 7, *)
     public convenience init?(color: Color?) {
         guard let cgColor = color?.cgColor else { return nil }
         self.init(cgColor: cgColor)
