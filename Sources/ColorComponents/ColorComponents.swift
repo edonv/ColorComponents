@@ -70,7 +70,7 @@ public class ColorComponents: Codable, RawRepresentable, Hashable {
         var rgbValue: UInt64 = 0
         Scanner(string: newString).scanHexInt64(&rgbValue)
         
-        self.init(hexWithAlpha: Int(rgbValue))
+        self.init(hexWithAlpha: UInt(rgbValue))
     }
     
     /// A hex-formatted string without alpha (`#000000`).
@@ -89,10 +89,10 @@ public class ColorComponents: Codable, RawRepresentable, Hashable {
     /// Generates a hexadecimal integer representing the color components.
     /// - Parameter withAlpha: Whether or not to include the alpha value.
     /// - Returns: A hexadecimal integer representing the color components.
-    public func hexInt(withAlpha: Bool = true) -> Int {
+    public func hexInt(withAlpha: Bool = true) -> UInt {
         let components = withAlpha ? self : self.alpha(0)
         
-        return Int(components.hexString
+        return UInt(components.hexString
             .replacingOccurrences(of: "0x", with: "")
             .replacingOccurrences(of: "#", with: ""),
                    radix: 16)!
@@ -107,16 +107,16 @@ public class ColorComponents: Codable, RawRepresentable, Hashable {
     
     required public convenience init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        self.init(hexWithAlpha: try container.decode(Int.self))
+        self.init(hexWithAlpha: try container.decode(UInt.self))
     }
     
     // MARK: - RawRepresentable
     
-    public var rawValue: Int {
+    public var rawValue: UInt {
         hexInt(withAlpha: true)
     }
     
-    required public convenience init?(rawValue: Int) {
+    required public convenience init?(rawValue: UInt) {
         self.init(hexWithAlpha: rawValue)
     }
 }
@@ -128,7 +128,7 @@ extension ColorComponents {
     ///
     /// This can either be directly coded as hexadecimal literal `0xFFFFFFFF` or as a regular integer literal (less human-readable).
     /// - Parameter hexInt: A hexadecimal integer.
-    public convenience init(hexWithAlpha hexInt: Int) {
+    public convenience init(hexWithAlpha hexInt: UInt) {
         self.init(red:   UInt8((hexInt & 0xff000000) >> 24),
                   green: UInt8((hexInt & 0x00ff0000) >> 16),
                   blue:  UInt8((hexInt & 0x0000ff00) >> 8),
@@ -139,7 +139,7 @@ extension ColorComponents {
     ///
     /// This can either be directly coded as hexadecimal literal `0xFFFFFF` or as a regular integer literal (less human-readable).
     /// - Parameter hexInt: A hexadecimal integer.
-    public convenience init(hexWithoutAlpha hexInt: Int) {
+    public convenience init(hexWithoutAlpha hexInt: UInt) {
         self.init(red:   UInt8((hexInt & 0xff0000) >> 16),
                   green: UInt8((hexInt & 0x00ff00) >> 8),
                   blue:  UInt8((hexInt & 0x0000ff) >> 0),
