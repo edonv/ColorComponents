@@ -241,8 +241,41 @@ extension ColorComponents {
     /// - Parameter color: A SwiftUI `Color`.
     @available(iOS 14, macOS 11, tvOS 14, watchOS 7, *)
     public convenience init?(color: Color?) {
-        guard let cgColor = color?.cgColor else { return nil }
-        self.init(cgColor: cgColor)
+        guard let color else { return nil }
+        
+        #if canImport(AppKit)
+        typealias NativeColor = NSColor
+        #else
+        typealias NativeColor = UIColor
+        #endif
+        
+        let nColor: NativeColor
+        
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        
+        if color.description.contains("NamedColor") {
+            let lowerBound = color.description.range(of: "name: \"")!.upperBound
+            let upperBound = color.description.range(of: "\", bundle")!.lowerBound
+            let assetsName = String(color.description[lowerBound..<upperBound])
+            
+            nColor = NativeColor(named: assetsName)!
+        } else {
+            nColor = NativeColor(color)
+        }
+        
+        #if canImport(AppKit)
+        nColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+        #else
+        guard nColor.getRed(&r, green: &g, blue: &b, alpha: &a) else { return nil }
+        #endif
+        
+        self.init(red: UInt8(r * 255),
+                  green: UInt8(g * 255),
+                  blue: UInt8(b * 255),
+                  alpha: UInt8(a * 255))
     }
     
     /// Creates a SwiftUI `Color` from the color components.
