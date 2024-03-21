@@ -21,7 +21,7 @@ let package = Package(
         .target(
             name: "ColorComponents",
             dependencies: [],
-            resources: [.copy("PrivacyInfo.xcprivacy")]
+            resources: [.copy("../PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "ColorComponentsTests",
